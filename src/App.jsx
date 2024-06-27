@@ -9,10 +9,8 @@ import {
   MEMORY_ADD,
   MEMORY_CLEAR,
   MEMORY_RECALL,
-  MEMORY_RECORD,
   typeOnScreen,
   changeOperation,
-  changeOperationv2,
 } from './store/actions.jsx';
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -24,7 +22,7 @@ function App() {
       <div className="container row mt-5">
         <div className="col-md-12 d-flex justify-content-center">
           <form name="Cal">
-            <TotalDisplay value={state.total} />
+            <TotalDisplay value={state.displayValue} />
             <div className="row details">
               <span id="operation">
                 <b>Operation:</b> {state.operation}
@@ -92,7 +90,7 @@ function App() {
             <div className="row">
               <CalcButton
                 value={'+'}
-                onClick={(e) => dispatch(changeOperationv2(e.target.value))}
+                onClick={(e) => dispatch(changeOperation(e.target.value))}
               />
               <CalcButton
                 value={0}
@@ -100,17 +98,17 @@ function App() {
               />
               <CalcButton
                 value={'-'}
-                onClick={(e) => dispatch(changeOperationv2(e.target.value))}
+                onClick={(e) => dispatch(changeOperation(e.target.value))}
               />
             </div>
             <div className="row">
               <CalcButton
                 value={'*'}
-                onClick={(e) => dispatch(changeOperationv2(e.target.value))}
+                onClick={(e) => dispatch(changeOperation(e.target.value))}
               />
               <CalcButton
                 value={'/'}
-                onClick={(e) => dispatch(changeOperationv2(e.target.value))}
+                onClick={(e) => dispatch(changeOperation(e.target.value))}
               />
               <CalcButton value={'CE'} onClick={() => dispatch({ type: CE })} />
             </div>

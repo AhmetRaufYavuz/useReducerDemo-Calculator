@@ -2,25 +2,23 @@ import {
   CE,
   APPLY_NUMBER,
   CHANGE_OPERATION,
-  CHANGE_OPERATION_V2,
   EQUALS,
   ADD_ONE,
   MEMORY_ADD,
   MEMORY_CLEAR,
   MEMORY_RECALL,
-  MEMORY_RECORD,
   TYPE_ON_SCREEN,
 } from './actions.jsx';
 
 export const initialState = {
-  total: 0,
+  displayValue: 0,
   operation: '+',
   memory: 0,
-  temporary: 0,
+  accumulator: 0,
 };
 
 const calculateResult = (num1, num2, operation) => {
-  console.log('temp: ' + num1 + 'total: ' + num2 + ' operation: ' + operation);
+  console.log('temp: ' + num1 + 'displayValue: ' + num2 + ' operation: ' + operation);
   switch (operation) {
     case '+':
       return num1 + num2;
@@ -40,78 +38,70 @@ const reducer = (state, action) => {
     case APPLY_NUMBER:
       return {
         ...state,
-        total: calculateResult(state.total, action.payload, state.operation),
+        displayValue: calculateResult(state.displayValue, action.payload, state.operation),
       };
 
     case CHANGE_OPERATION:
       return {
         ...state,
         operation: action.payload,
+        accumulator: state.accumulator === 0 ? state.displayValue : state.accumulator,
+        displayValue: initialState.displayValue
       };
-    case CHANGE_OPERATION_V2:
+
+    case TYPE_ON_SCREEN:
       return {
         ...state,
-        operation: action.payload,
-        total: initialState.total,
-        temporary:
-          state.temporary === 0
-            ? state.total
-            : calculateResult(
-              Number(state.temporary),
-              Number(state.total),
-              state.operation
-            ),
-      };
-    case TYPE_ON_SCREEN:
-      const newState = {
-        ...state,
-        total:
-          state.total === 0
+        displayValue:
+          state.displayValue === 0
             ? action.payload
-            : state.total.toString() + action.payload.toString(),
+            : state.displayValue.toString() + action.payload.toString(),
       };
-      return newState;
+
     case ADD_ONE:
       return {
         ...state,
-        total: calculateResult(state.total, action.payload, state.operation),
+        displayValue: calculateResult(state.displayValue, action.payload, state.operation),
       };
+
     case EQUALS:
       return {
         ...state,
-        total: calculateResult(
-          Number(state.temporary),
-          Number(state.total),
+        displayValue: calculateResult(
+          Number(state.accumulator),
+          Number(state.displayValue),
           state.operation
         ),
+        accumulator: initialState.accumulator,
+        operation: '+'
       };
 
     case CE:
       return {
         ...state,
-        total: initialState.total,
-        temporary: initialState.temporary,
+        displayValue: initialState.displayValue,
+        accumulator: initialState.accumulator,
       };
+
     case MEMORY_ADD:
       return {
         ...state,
-        memory: state.total,
+        memory: state.displayValue,
       };
-    case MEMORY_RECORD:
-      return {
-        ...state,
-        total: calculateResult(state.total, state.memory, state.operation),
-      };
+
+
     case MEMORY_RECALL:
       return {
         ...state,
-        total: state.memory,
+        displayValue: state.memory,
       };
+
     case MEMORY_CLEAR:
       return {
         ...state,
         memory: initialState.memory,
       };
+
     default:
       return state;
   }
